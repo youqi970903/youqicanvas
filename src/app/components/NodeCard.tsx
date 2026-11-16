@@ -10,6 +10,10 @@ import ProjectIconImg from "figma:asset/582b64d71fa84f3955e59f2dd1989af0ad65d648
 import Project3IconImg from "figma:asset/f4b127bc67f06a7af7574b7cd24cf609299851f9.png";
 import TagIcon from "../../imports/Tag-1";
 
+export function isProjectNode(label: string) {
+  return ['Ragene', 'Ragene AI', 'Marlo', 'Archived', 'Benchling'].includes(label);
+}
+
 interface NodeCardProps {
   id: string;
   label: string;
@@ -19,6 +23,7 @@ interface NodeCardProps {
   y: MotionValue<number>;
   onResize: (id: string, width: number, height: number) => void;
   onHoverChange: (id: string | null) => void;
+  onProjectMouseMove: (event: React.MouseEvent<HTMLDivElement>) => void;
   scale: number;
 }
 
@@ -31,6 +36,7 @@ export function NodeCard({
   y,
   onResize,
   onHoverChange,
+  onProjectMouseMove,
   scale
 }: NodeCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -80,13 +86,10 @@ export function NodeCard({
         position: 'absolute',
         zIndex: isHovered ? 50 : 10
       }}
-      className={cn(
-        "group transition-colors",
-        (label === 'Ragene' || label === 'Ragene AI' || label === 'Marlo' || label === 'Archived' || label === 'Benchling') 
-          ? "custom-project-cursor" 
-          : "custom-node-cursor"
-      )}
-      onMouseEnter={() => {
+      className="group transition-colors custom-node-cursor"
+      onMouseMove={isProjectNode(label) ? onProjectMouseMove : undefined}
+      onMouseEnter={(event) => {
+        if (isProjectNode(label)) onProjectMouseMove(event);
         setIsHovered(true);
         onHoverChange(id);
       }}
@@ -112,7 +115,7 @@ export function NodeCard({
         }}
         className={cn(
           "bg-white rounded-[8px] p-[8px] w-[180px] min-h-[52px] shadow-[0px_0px_5px_0px_rgba(142,149,165,0.1)] border-[0.5px] border-[#d2d6dd] hover:shadow-[0px_4px_20px_0px_rgba(0,0,0,0.08)] transition-shadow duration-200 overflow-hidden",
-          (label === 'Ragene' || label === 'Ragene AI' || label === 'Marlo' || label === 'Archived' || label === 'Benchling') && "hover:border-[#8e95a5] active:bg-[#f8f9fb]"
+          isProjectNode(label) && "hover:border-[#8e95a5] active:bg-[#f8f9fb]"
         )}
       >
         <div className="flex items-center justify-between gap-[12px]">
@@ -125,7 +128,7 @@ export function NodeCard({
               label.includes('Project') ? "bg-[#EDEFF6]" :
               label === 'Benchling' ? "bg-[#EDEFF6]" : "bg-[#EDEFF6]"
             )}>
-              <div className={cn("flex items-center justify-center w-full h-full text-[20px] font-medium font-['Fira_Code'] leading-none", getIconTextColor())}>
+              <div className={cn("flex items-center justify-center w-full h-full text-[20px] leading-none", getIconTextColor())}>
                 {label === 'Youqi W.' ? (
                   <CharacterIcon />
                 ) : label === 'Benchling' ? (
@@ -147,7 +150,7 @@ export function NodeCard({
                 ) : (label === 'Born!' ? '🐣' : icon)}
               </div>
             </div>
-            <span className="text-[14px] font-medium text-[#262626] font-['Fira_Code'] tracking-[-0.56px] truncate">
+            <span className="text-[#262626] truncate">
               {label}
             </span>
           </div>

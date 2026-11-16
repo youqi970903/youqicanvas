@@ -51,26 +51,26 @@ export function ArchivedTooltip({ isVisible, side = 'right' }: ArchivedTooltipPr
                   <path d={svgPaths.p30557bf0} fill="#262626" />
                 </svg>
               </div>
-              <span className="text-[14px] font-medium font-['Fira_Code'] text-[#262626] tracking-[-0.56px]">Input</span>
+              <span className="text-[#262626]">Input</span>
             </div>
             
             <div className="flex flex-col gap-[12px]">
               <div className="flex gap-[40px] items-start">
-                <span className="text-[14px] font-['Fira_Code'] text-[#8a91a0] tracking-[-0.56px] w-[100px] shrink-0">Company</span>
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Company</span>
                 <div className="flex flex-wrap gap-[4px] flex-1">
                   <div className="bg-[#edeff6] px-[4px] py-0 rounded-[2px]">
-                    <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">CDK Global</span>
+                    <span className="text-[#5a5a5a]">CDK Global</span>
                   </div>
                   <div className="bg-[#edeff6] px-[4px] py-0 rounded-[2px]">
-                    <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">Essilorluxottica</span>
+                    <span className="text-[#5a5a5a]">Essilorluxottica</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex gap-[40px] items-start">
-                <span className="text-[14px] font-['Fira_Code'] text-[#8a91a0] tracking-[-0.56px] w-[100px] shrink-0">Time</span>
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Time</span>
                 <div className="bg-[#edeff6] px-[4px] py-0 rounded-[2px]">
-                  <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">2021 - 2022</span>
+                  <span className="text-[#5a5a5a]">2021 - 2022</span>
                 </div>
               </div>
             </div>
@@ -86,17 +86,17 @@ export function ArchivedTooltip({ isVisible, side = 'right' }: ArchivedTooltipPr
                   <path d={svgPaths.p28804b40} fill="#262626" />
                 </svg>
               </div>
-              <span className="text-[14px] font-medium font-['Fira_Code'] text-[#262626] tracking-[-0.56px]">Output</span>
+              <span className="text-[#262626]">Output</span>
             </div>
             
             <div className="flex gap-[40px] items-start">
-              <span className="text-[14px] font-['Fira_Code'] text-[#8a91a0] tracking-[-0.56px] w-[100px] shrink-0">Project</span>
+              <span className="text-[#8a91a0] w-[100px] shrink-0">Project</span>
               <div className="flex flex-col gap-[6px] flex-1">
                 <div className="bg-[#edeff6] px-[4px] py-0 rounded-[4px]">
-                  <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">Enhance dealerships' accessing document efficiency by revamping document search</span>
+                  <span className="text-[#5a5a5a]">Enhance dealerships' accessing document efficiency by revamping document search</span>
                 </div>
                 <div className="bg-[#edeff6] px-[4px] py-0 rounded-[4px]">
-                  <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">Facilitate digital transformation planning by informative storyboard</span>
+                  <span className="text-[#5a5a5a]">Facilitate digital transformation planning by informative storyboard</span>
                 </div>
               </div>
             </div>

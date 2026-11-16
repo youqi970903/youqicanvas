@@ -1,9 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { motion, useMotionValue, useTransform, AnimatePresence } from 'motion/react';
-import { Sidebar } from './components/Sidebar';
-import { NodeCard } from './components/NodeCard';
+import { motion, useMotionValue, useTransform } from 'motion/react';
+import { RotateCcw } from 'lucide-react';
+import { NodeCard, isProjectNode } from './components/NodeCard';
 import { Connector } from './components/Connector';
-import { CloudTrail } from './components/CloudTrail';
+import { AsciiBackground } from './components/AsciiBackground';
+import { CanvasSettingsPanel } from './components/CanvasSettingsPanel';
+import { ToolbarTooltip } from './components/ToolbarTooltip';
+import { DEFAULT_TYPOGRAPHY, PAGE_FONTS } from './components/typographySettings';
+import { DEFAULT_GRID_SETTINGS } from './components/gridSettings';
+import { DEFAULT_ASCII_SETTINGS } from './components/asciiSettings';
+import { GridCursor } from './components/GridCursor';
 import { NodeData, Connection, NODE_TYPES } from './components/types';
 import { cn } from './components/types';
 
@@ -24,9 +30,15 @@ import imgGradientBackground from "figma:asset/dcdf8ac3d739ccf6bcf41e13e8b3a700f
 import imgNoise from "figma:asset/c39a2215280e36dcd4f202040d7e3a368d62f083.png";
 import imgBenchling from "../imports/LightGradient68/46964bea6e5e03c8226977c782fb781ff64234f5.png";
 
+const DEFAULT_VERTICAL_MARGIN = 16;
+const DEFAULT_HORIZONTAL_MARGIN = 40;
+const DEFAULT_CANVAS_MODE = 'ascii';
+// The same world point stays centered when the canvas opens at a different size.
+const DEFAULT_CANVAS_VIEW = { centerX: 717.3807, centerY: 593.4584, scale: 0.90592 };
+
 const INITIAL_NODES: NodeData[] = [
-  { id: 'born', type: NODE_TYPES.START, label: 'Born!', icon: '👼', position: { x: 50, y: 480 } },
-  { id: 'youqi', type: NODE_TYPES.ROLE, label: 'Youqi W.', icon: '👧', position: { x: 320, y: 515 } },
+  { id: 'born', type: NODE_TYPES.START, label: 'Born!', icon: '👼', position: { x: 34.0909, y: 380.221 } },
+  { id: 'youqi', type: NODE_TYPES.ROLE, label: 'Youqi W.', icon: '👧', position: { x: 312.053, y: 335.273 } },
   { id: 'work', type: NODE_TYPES.EXPERIENCE, label: 'Work', icon: '💼', position: { x: 636, y: 400 } },
   { id: 'creative', type: NODE_TYPES.EXPERIENCE, label: 'Creative', icon: '🪄', position: { x: 583, y: 698 } },
   { id: 'benchling', type: NODE_TYPES.EXPERIENCE, label: 'Benchling', icon: '🧬', image: imgBenchling, position: { x: 900, y: 300 } },
@@ -50,39 +62,33 @@ const INITIAL_CONNECTIONS: Connection[] = [
 export default function App() {
   const [nodes] = useState<NodeData[]>(INITIAL_NODES);
   const [nodeDimensions, setNodeDimensions] = useState<Record<string, { width: number; height: number }>>({});
-  const [viewport, setViewport] = useState({ x: 0, y: 0, scale: 0.86 });
+  const [viewport, setViewport] = useState({ x: 0, y: 0, scale: DEFAULT_CANVAS_VIEW.scale });
+  const [canvasMode, setCanvasMode] = useState<'grid' | 'ascii'>(DEFAULT_CANVAS_MODE);
+  const [gridSettings, setGridSettings] = useState(DEFAULT_GRID_SETTINGS);
+  const [asciiSettings, setAsciiSettings] = useState(DEFAULT_ASCII_SETTINGS);
+  const [typography, setTypography] = useState(DEFAULT_TYPOGRAPHY);
+  const [verticalMargin, setVerticalMargin] = useState(DEFAULT_VERTICAL_MARGIN);
+  const [horizontalMargin, setHorizontalMargin] = useState(DEFAULT_HORIZONTAL_MARGIN);
+  const [settingsResetCount, setSettingsResetCount] = useState(0);
   const [isPanning, setIsPanning] = useState(false);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   
   const canvasRef = useRef<HTMLDivElement>(null);
+  const projectHintRef = useRef<HTMLDivElement>(null);
+  const projectHintX = useMotionValue(0);
+  const projectHintY = useMotionValue(0);
   const lastMousePos = useRef({ x: 0, y: 0 });
 
-  // Center nodes on initial load
+  // Center nodes after the initial layout or a full reset.
   useEffect(() => {
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
-      const scale = 0.86;
-      
-      // Calculate bounding box of initial nodes
-      const minX = Math.min(...INITIAL_NODES.map(n => n.position.x));
-      const maxX = Math.max(...INITIAL_NODES.map(n => n.position.x + 200)); // Approx width
-      const minY = Math.min(...INITIAL_NODES.map(n => n.position.y));
-      const maxY = Math.max(...INITIAL_NODES.map(n => n.position.y + 100)); // Approx height
-
-      const contentWidth = maxX - minX;
-      const contentHeight = maxY - minY;
-      
-      const centerX = minX + contentWidth / 2;
-      const centerY = minY + contentHeight / 2;
-
-      // Calculate the offset to center the nodes in the viewport
+      const { centerX, centerY, scale } = DEFAULT_CANVAS_VIEW;
       const x = rect.width / 2 - centerX * scale;
       const y = rect.height / 2 - centerY * scale;
-
       setViewport({ x, y, scale });
     }
-  }, []);
+  }, [settingsResetCount]);
 
   // Define motion values at the top level for all nodes
   const bornX = useMotionValue(INITIAL_NODES[0].position.x);
@@ -124,10 +130,27 @@ export default function App() {
     });
   }, []);
 
+  const moveProjectHint = (event: React.MouseEvent<HTMLDivElement>) => {
+    const canvas = canvasRef.current;
+    const hint = projectHintRef.current;
+    if (!canvas || !hint) return;
+
+    const bounds = canvas.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
+    const gap = 12;
+    const maxX = Math.max(0, bounds.width - hint.offsetWidth - 4);
+    const maxY = Math.max(0, bounds.height - hint.offsetHeight - 4);
+    const left = x + gap <= maxX ? x + gap : x - hint.offsetWidth - gap;
+
+    projectHintX.set(Math.max(4, Math.min(left, maxX)));
+    projectHintY.set(Math.max(4, Math.min(y + 6, maxY)));
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     // If we click anything that isn't a node or interactive element, start panning
     const target = e.target as HTMLElement;
-    const isInteractive = target.closest('.node-card') || target.closest('button');
+    const isInteractive = target.closest('.node-card') || target.closest('button') || target.closest('[data-canvas-settings]');
     
     if (!isInteractive) {
       setIsPanning(true);
@@ -149,6 +172,7 @@ export default function App() {
   }, []);
 
   const handleWheel = useCallback((e: WheelEvent) => {
+    if (e.target instanceof Element && e.target.closest('[data-canvas-settings]')) return;
     // Prevent default scroll behavior to avoid jumping and browser zoom
     e.preventDefault();
     
@@ -203,40 +227,36 @@ export default function App() {
 
   const zoomIn = () => setViewport(prev => ({ ...prev, scale: Math.min(prev.scale + 0.1, 2) }));
   const zoomOut = () => setViewport(prev => ({ ...prev, scale: Math.max(prev.scale - 0.1, 0.2) }));
-  const resetZoom = () => {
-    if (canvasRef.current) {
-      const rect = canvasRef.current.getBoundingClientRect();
-      const scale = 0.86;
-      const minX = Math.min(...INITIAL_NODES.map(n => n.position.x));
-      const maxX = Math.max(...INITIAL_NODES.map(n => n.position.x + 200));
-      const minY = Math.min(...INITIAL_NODES.map(n => n.position.y));
-      const maxY = Math.max(...INITIAL_NODES.map(n => n.position.y + 100));
-      const centerX = minX + (maxX - minX) / 2;
-      const centerY = minY + (maxY - minY) / 2;
-      const x = rect.width / 2 - centerX * scale;
-      const y = rect.height / 2 - centerY * scale;
-      setViewport({ x, y, scale });
+  const resetAll = () => {
+    setCanvasMode(DEFAULT_CANVAS_MODE);
+    setGridSettings(DEFAULT_GRID_SETTINGS);
+    setAsciiSettings(DEFAULT_ASCII_SETTINGS);
+    setTypography(DEFAULT_TYPOGRAPHY);
+    setVerticalMargin(DEFAULT_VERTICAL_MARGIN);
+    setHorizontalMargin(DEFAULT_HORIZONTAL_MARGIN);
+    setSettingsResetCount((count) => count + 1);
+    setHoveredNodeId(null);
+    setIsPanning(false);
 
-      // Reset node positions
-      bornX.set(INITIAL_NODES[0].position.x);
-      bornY.set(INITIAL_NODES[0].position.y);
-      youqiX.set(INITIAL_NODES[1].position.x);
-      youqiY.set(INITIAL_NODES[1].position.y);
-      workX.set(INITIAL_NODES[2].position.x);
-      workY.set(INITIAL_NODES[2].position.y);
-      creativeX.set(INITIAL_NODES[3].position.x);
-      creativeY.set(INITIAL_NODES[3].position.y);
-      benchlingX.set(INITIAL_NODES[4].position.x);
-      benchlingY.set(INITIAL_NODES[4].position.y);
-      project1X.set(INITIAL_NODES[5].position.x);
-      project1Y.set(INITIAL_NODES[5].position.y);
-      project3X.set(INITIAL_NODES[6].position.x);
-      project3Y.set(INITIAL_NODES[6].position.y);
-      project2X.set(INITIAL_NODES[7].position.x);
-      project2Y.set(INITIAL_NODES[7].position.y);
-      archivedX.set(INITIAL_NODES[8].position.x);
-      archivedY.set(INITIAL_NODES[8].position.y);
-    }
+    // Reset node positions
+    bornX.set(INITIAL_NODES[0].position.x);
+    bornY.set(INITIAL_NODES[0].position.y);
+    youqiX.set(INITIAL_NODES[1].position.x);
+    youqiY.set(INITIAL_NODES[1].position.y);
+    workX.set(INITIAL_NODES[2].position.x);
+    workY.set(INITIAL_NODES[2].position.y);
+    creativeX.set(INITIAL_NODES[3].position.x);
+    creativeY.set(INITIAL_NODES[3].position.y);
+    benchlingX.set(INITIAL_NODES[4].position.x);
+    benchlingY.set(INITIAL_NODES[4].position.y);
+    project1X.set(INITIAL_NODES[5].position.x);
+    project1Y.set(INITIAL_NODES[5].position.y);
+    project3X.set(INITIAL_NODES[6].position.x);
+    project3Y.set(INITIAL_NODES[6].position.y);
+    project2X.set(INITIAL_NODES[7].position.x);
+    project2Y.set(INITIAL_NODES[7].position.y);
+    archivedX.set(INITIAL_NODES[8].position.x);
+    archivedY.set(INITIAL_NODES[8].position.y);
   };
 
   // Tooltip Overlay Positioning Logic
@@ -262,70 +282,105 @@ export default function App() {
   }, [hoveredNodeId, viewport, nodeDimensions]);
 
   return (
-    <div className="flex h-screen w-full bg-white overflow-hidden select-none">
-      <AnimatePresence initial={false}>
-        {isSidebarVisible && (
-          <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 240, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="overflow-hidden flex-shrink-0"
+    <div
+      data-page-typography
+      className="flex h-dvh w-full flex-col overflow-hidden bg-white select-none"
+      style={{
+        fontFamily: PAGE_FONTS[typography.font],
+        fontSize: typography.fontSize,
+        fontWeight: typography.weight,
+        // Leave enough room for the canvas controls when a large margin is selected.
+        '--page-margin-x': `max(0px, min(${horizontalMargin}px, (100dvw - 240px) / 2))`,
+        '--page-margin-y': `max(0px, min(${verticalMargin}px, (100dvh - 240px) / 2))`,
+        '--page-letter-spacing': `${typography.spacing / 100}em`,
+      } as React.CSSProperties}
+    >
+      <header className="relative z-10 flex min-h-[46px] shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 px-[var(--page-margin-x)] pb-1 pt-[var(--page-margin-y)] text-[#262626]">
+        <h1>
+          Youqi Design &amp; Build across <span className="underline underline-offset-4">Her life</span> &amp;{' '}
+          <span className="group relative inline-block whitespace-nowrap">
+            <span tabIndex={0} aria-describedby="product-lifecycle-hint">Product lifecycle</span>
+            <span
+              id="product-lifecycle-hint"
+              role="tooltip"
+              aria-hidden="true"
+              className={cn('ui-hint', 'invisible absolute right-0 top-full mt-1 group-hover:visible group-focus-within:visible')}
+            >
+              Coming soon
+            </span>
+          </span>
+        </h1>
+        <nav aria-label="Portfolio links" className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <button
+            onClick={() => window.open('https://drive.google.com/file/d/1LiZJ8TkkyEsqIbZwW7UKxq1xcdb1xKNJ/view?usp=sharing', '_blank')}
+            className="text-[#262626] hover:underline cursor-pointer"
           >
-            <Sidebar />
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Resume
+          </button>
+          <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
+          <button
+            onClick={() => window.open('https://mail.google.com/mail/?view=cm&fs=1&to=youqi9793@gmail.com', '_blank')}
+            className="text-[#262626] hover:underline cursor-pointer"
+          >
+            Email
+          </button>
+          <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
+          <button
+            onClick={() => window.open('https://www.linkedin.com/in/youqi-w-1b8105233', '_blank')}
+            className="text-[#262626] hover:underline cursor-pointer"
+          >
+            LinkedIn
+          </button>
+        </nav>
+      </header>
 
-      <motion.main 
-        layout
-        className={cn(
-          "flex-1 relative overflow-hidden flex items-center justify-center py-[24px] pr-[24px] z-10",
-          isSidebarVisible ? "pl-0" : "pl-[24px]"
-        )}
-      >
+      <main className="relative min-h-0 flex-1 overflow-hidden px-[var(--page-margin-x)] pb-[var(--page-margin-y)] pt-2">
         {/* Canvas Container */}
         <motion.div 
-          layout
           ref={canvasRef}
           onMouseDown={handleMouseDown}
-          className="w-full h-full bg-white rounded-[24px] shadow-[0px_2px_18px_0px_rgba(0,0,0,0.04)] relative overflow-hidden border border-[#e2e4ec]"
+          className="relative h-full w-full overflow-hidden rounded-[12px] bg-[#f7f7f7]"
           style={{ 
             cursor: isPanning ? 'grabbing' : 'grab',
           }}
         >
-          {/* Noise layer */}
-          <div 
-            className="absolute inset-0 opacity-[0.03] pointer-events-none"
-            style={{ backgroundImage: `url(${imgNoise})` }}
-          />
-          
-          {/* Gradient background layer */}
-          <div 
-            className="absolute inset-0 pointer-events-none opacity-40"
-            style={{ 
-              backgroundImage: `url(${imgGradientBackground})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          />
+          {canvasMode === 'ascii' ? (
+            <AsciiBackground settings={asciiSettings} />
+          ) : (
+            <>
+              {/* Noise layer */}
+              <div
+                className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                style={{ backgroundImage: `url(${imgNoise})` }}
+              />
 
-          {/* Grid Background */}
-          <div 
-            className="absolute inset-0 canvas-background"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, #ededed 1px, transparent 1px),
-                linear-gradient(to bottom, #ededed 1px, transparent 1px)
-              `,
-              backgroundSize: `${36 * viewport.scale}px ${36 * viewport.scale}px`,
-              backgroundPosition: `${viewport.x}px ${viewport.y}px`,
-              backgroundColor: '#F7F7F7',
-            }}
-          />
+              {/* Gradient background layer */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-40"
+                style={{
+                  backgroundImage: `url(${imgGradientBackground})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              />
 
-          {/* Cursor Cloud Trail - Positioned behind nodes but on the canvas */}
-          <CloudTrail />
+              {/* Grid Background */}
+              <div
+                className="absolute inset-0 canvas-background"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, ${gridSettings.lineColor} ${gridSettings.lineWidth}px, transparent 1px),
+                    linear-gradient(to bottom, ${gridSettings.lineColor} ${gridSettings.lineWidth}px, transparent 1px)
+                  `,
+                  backgroundSize: `${gridSettings.cellSize * viewport.scale}px ${gridSettings.cellSize * viewport.scale}px`,
+                  backgroundPosition: `${viewport.x}px ${viewport.y}px`,
+                  backgroundColor: gridSettings.backgroundColor,
+                }}
+              />
+
+              <GridCursor settings={gridSettings} />
+            </>
+          )}
 
           {/* Node Layer */}
           <div 
@@ -345,6 +400,7 @@ export default function App() {
                     y={nodePositions[node.id].y}
                     onResize={handleNodeResize}
                     onHoverChange={setHoveredNodeId}
+                    onProjectMouseMove={moveProjectHint}
                     scale={viewport.scale}
                   />
                 </div>
@@ -376,6 +432,19 @@ export default function App() {
               })}
             </svg>
           </div>
+
+          <motion.div
+            ref={projectHintRef}
+            aria-hidden="true"
+            className={cn('ui-hint', 'absolute left-0 top-0 z-[60]')}
+            style={{
+              x: projectHintX,
+              y: projectHintY,
+              visibility: activeNode && isProjectNode(activeNode.label) && !isPanning ? 'visible' : 'hidden',
+            }}
+          >
+            Click to view
+          </motion.div>
 
           {/* Tooltip UI Overlay - Decoupled from canvas transform */}
           <div className="absolute inset-0 pointer-events-none z-50">
@@ -413,90 +482,72 @@ export default function App() {
             )}
           </div>
 
-          {/* Overlays */}
-          {/* Top Left Title Bar */}
-          <div className="absolute top-[16px] left-[16px] bg-[rgba(255,255,255,0.8)] h-[42px] px-[12px] flex items-center gap-[8px] rounded-[12px] shadow-[0px_2px_18px_0px_rgba(0,0,0,0.04)] backdrop-blur-sm z-30">
-            <span className="text-[28px] leading-none mt-[-4px]">👋</span>
-            <h1 className="text-[24px] italic text-[#262626] tracking-[-1.12px] font-['Libre_Baskerville']">
-              youqi’s portfolio canvas
-            </h1>
-            <div className="w-[1px] h-[13px] bg-[#E2E4EC] mx-[8px]" />
-            <div className="flex items-center gap-[6px]">
-              <svg className="size-[20px]" fill="none" viewBox="0 0 20 20">
-                 <path d="M10.001 3.3315C7.53512 3.3315 5.45762 4.54316 3.75095 6.53483C3.16679 7.21566 2.65595 7.94317 2.24012 8.66983C1.98928 9.10983 1.83595 9.44982 1.74595 9.65982C1.65595 9.86899 1.65595 10.1273 1.74595 10.3365C1.83595 10.5465 1.98928 10.8865 2.24012 11.3265C2.65595 12.0531 3.16679 12.7807 3.75095 13.4615C5.45762 15.4532 7.53512 16.6648 10.001 16.6648C12.4668 16.6648 14.5443 15.4532 16.251 13.4615C16.8343 12.7807 17.346 12.0531 17.761 11.3265C18.0126 10.8865 18.166 10.5465 18.256 10.3365C18.346 10.1273 18.346 10.1273 18.256 9.65982" stroke="#262626" strokeWidth="1.5" strokeLinecap="round" />
-                 <circle cx="10" cy="10" r="3" stroke="#262626" strokeWidth="1.5" />
-              </svg>
-              <span className="text-[14px] text-[#262626] font-['Fira_Code'] tracking-[-0.56px]">View only</span>
+          <div
+            role="group"
+            aria-label="Canvas controls"
+            className="canvas-control-surface absolute bottom-3 left-1/2 z-30 flex min-h-[42px] w-max max-w-[calc(100%-8px)] -translate-x-1/2 flex-wrap items-center justify-center gap-0.5 px-1 py-1 text-[#262626] min-[480px]:gap-2 min-[480px]:py-2 min-[480px]:px-2"
+          >
+            <div role="group" aria-label="Canvas appearance" className="relative z-10 flex min-h-[26px] items-center justify-center rounded-[5px] bg-[#ebebeb] p-0.5 min-[480px]:min-w-[102px] min-[480px]:p-1">
+              {(['grid', 'ascii'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  aria-pressed={canvasMode === mode}
+                  onClick={() => setCanvasMode(mode)}
+                  className={cn(
+                    "min-h-[18px] flex-auto cursor-pointer rounded-[4px] px-1 leading-none focus-visible:outline-2 focus-visible:outline-offset-1 min-[480px]:px-1.5",
+                    canvasMode === mode ? 'bg-white shadow-sm' : 'hover:bg-white/50'
+                  )}
+                >
+                  {mode === 'grid' ? 'Grid' : 'ASCII'}
+                </button>
+              ))}
             </div>
-          </div>
-
-          {/* Top Right Links Bar */}
-          <div className="absolute top-[16px] right-[16px] bg-[rgba(255,255,255,0.8)] h-[42px] px-[16px] flex items-center gap-[12px] rounded-[12px] shadow-[0px_2px_18px_0px_rgba(0,0,0,0.04)] backdrop-blur-sm z-30">
-            <button 
-              onClick={() => window.open('https://drive.google.com/file/d/1LiZJ8TkkyEsqIbZwW7UKxq1xcdb1xKNJ/view?usp=sharing', '_blank')}
-              className="text-[14px] text-[#262626] font-['Fira_Code'] tracking-[-0.56px] hover:underline cursor-pointer"
-            >
-              Resume
-            </button>
-            <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
-            <button 
-              onClick={() => window.open('https://mail.google.com/mail/?view=cm&fs=1&to=youqi9793@gmail.com', '_blank')}
-              className="text-[14px] text-[#262626] font-['Fira_Code'] tracking-[-0.56px] hover:underline cursor-pointer"
-            >
-              Email
-            </button>
-            <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
-            <button 
-              onClick={() => window.open('https://www.linkedin.com/in/youqi-w-1b8105233', '_blank')}
-              className="text-[14px] text-[#262626] font-['Fira_Code'] tracking-[-0.56px] hover:underline cursor-pointer"
-            >
-              LinkedIn
-            </button>
-          </div>
-
-          {/* Bottom Zoom Controls */}
-          <div className="absolute bottom-[16px] left-1/2 -translate-x-1/2 bg-[rgba(255,255,255,0.8)] h-[42px] px-[16px] flex items-center gap-[12px] rounded-[12px] shadow-[0px_2px_18px_0px_rgba(0,0,0,0.04)] backdrop-blur-sm z-30">
-            <button
-              onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-              className={cn(
-                "size-[16px] hover:opacity-70 transition-opacity cursor-pointer",
-                !isSidebarVisible && "opacity-50"
-              )}
-            >
-              <svg viewBox="0 0 16 16" fill="none">
-                <path d="M15.2 0H0.8C0.358 0 0 0.358 0 0.8V15.2C0 15.642 0.358 16 0.8 16H15.2C15.642 16 16 15.642 16 15.2V0.8C16 0.358 15.642 0 15.2 0ZM4.8 14.4H1.6V1.6H4.8V14.4ZM14.4 14.4H6.4V1.6H14.4V14.4Z" fill="#262626" />
-              </svg>
-            </button>
-            <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
-            <div className="flex items-center gap-[12px]">
-              <button onClick={zoomOut} className="size-[20px] flex items-center justify-center hover:bg-gray-100 rounded cursor-pointer">
-                <svg width="12" height="2" viewBox="0 0 12 2" fill="none">
-                  <path d="M1 1H11" stroke="#262626" strokeWidth="2" strokeLinecap="round" />
+            <CanvasSettingsPanel
+              key={settingsResetCount}
+              canvasRef={canvasRef}
+              verticalMargin={verticalMargin}
+              onVerticalMarginChange={setVerticalMargin}
+              horizontalMargin={horizontalMargin}
+              onHorizontalMarginChange={setHorizontalMargin}
+              typography={typography}
+              onTypographyChange={setTypography}
+              appearance={canvasMode === 'ascii'
+                ? { mode: 'ascii', settings: asciiSettings, onChange: setAsciiSettings }
+                : { mode: 'grid', settings: gridSettings, onChange: setGridSettings }}
+            />
+            <div className="relative z-10 flex items-center gap-0.5 min-[480px]:gap-2">
+              <button type="button" aria-label="Zoom out" onClick={zoomOut} className="group/toolbar relative grid size-6 cursor-pointer place-items-center rounded-[5px] hover:bg-[#ebebeb] min-[480px]:size-[26px]">
+                <svg width="12" height="2" viewBox="0 0 12 2" fill="none" aria-hidden="true">
+                  <path d="M1 1H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
+                <ToolbarTooltip label="Zoom out" />
               </button>
-              <span className="text-[14px] text-[#262626] font-['Fira_Code'] tracking-[-0.56px] min-w-[35px] text-center">
+              <span className="min-w-[30px] text-center tabular-nums min-[480px]:min-w-[32px]">
                 {Math.round(viewport.scale * 100)}%
               </span>
-              <button onClick={zoomIn} className="size-[20px] flex items-center justify-center hover:bg-gray-100 rounded cursor-pointer">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M6 1V11M1 6H11" stroke="#262626" strokeWidth="2" strokeLinecap="round" />
+              <button type="button" aria-label="Zoom in" onClick={zoomIn} className="group/toolbar relative grid size-6 cursor-pointer place-items-center rounded-[5px] hover:bg-[#ebebeb] min-[480px]:size-[26px]">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M6 1V11M1 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
+                <ToolbarTooltip label="Zoom in" />
               </button>
             </div>
-            <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
-            <button onClick={resetZoom} className="text-[14px] text-[#262626] font-['Fira_Code'] tracking-[-0.56px] hover:underline cursor-pointer">
-              Reset
+            <button type="button" aria-label="Reset all" onClick={resetAll}
+              className="group/toolbar relative z-10 grid size-6 cursor-pointer place-items-center rounded-[5px] hover:bg-[#ebebeb] min-[480px]:size-[26px]">
+              <RotateCcw aria-hidden="true" size={16} strokeWidth={2} />
+              <ToolbarTooltip label="Reset all" />
             </button>
-            <div className="w-[1px] h-[13px] bg-[#E2E4EC]" />
             <button
+              type="button"
               onClick={() => window.open('https://mail.google.com/mail/?view=cm&fs=1&to=youqi9793@gmail.com', '_blank')}
-              className="bg-[#262626] text-white text-[14px] px-[8px] py-[4px] rounded-[6px] font-['Fira_Code'] tracking-[-0.56px] hover:opacity-90 transition-opacity cursor-pointer"
+              className="relative z-10 grid min-h-[26px] cursor-pointer place-items-center whitespace-nowrap rounded-[6px] bg-[#262626] px-1.5 text-white min-[480px]:ml-2 min-[480px]:min-w-[100px] min-[480px]:px-2 transition-opacity hover:opacity-90"
             >
               Ask to edit
             </button>
           </div>
         </motion.div>
-      </motion.main>
+      </main>
     </div>
   );
 }
