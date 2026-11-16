@@ -52,6 +52,7 @@ export function Connector({ sourceX, sourceY, targetX, targetY, sourceWidth, sou
         fill="none"
         stroke="#8e95a5"
         strokeWidth="1.5"
+        className="node-connector-line"
         strokeDasharray="4 4"
         strokeLinecap="butt"
       />

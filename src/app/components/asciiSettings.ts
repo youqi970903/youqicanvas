@@ -3,7 +3,7 @@ export const DEFAULT_ASCII_SETTINGS = {
   fontSize: 10,
   font: "'Courier New', monospace",
   pattern: ".+..:.x.\nWelcome:)\nHiiiii'm Youqi!\n..:-...:",
-  backgroundColor: "#f7f7f7",
+  backgroundColor: "#fafafa",
   characterColor: "#f2f2f2",
   radius: 140,
   trailColor: "#00ffe1",
