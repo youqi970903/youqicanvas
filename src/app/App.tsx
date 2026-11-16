@@ -296,7 +296,7 @@ export default function App() {
       } as React.CSSProperties}
     >
       <header className="relative z-10 flex min-h-[46px] shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 px-[var(--page-margin-x)] pb-1 pt-[var(--page-margin-y)] text-[#262626]">
-        <h1>Youqi design and build across interface &amp; system &amp; product lifecycle</h1>
+        <h1>Youqi designs and builds across products' interface &amp; system &amp; lifecycle</h1>
         <nav aria-label="Portfolio links" className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <button
             onClick={() => window.open('https://drive.google.com/file/d/1LiZJ8TkkyEsqIbZwW7UKxq1xcdb1xKNJ/view?usp=sharing', '_blank')}
