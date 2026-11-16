@@ -56,38 +56,38 @@ export function BenchlingTooltip({ isVisible, side = 'right' }: BenchlingTooltip
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col font-['Fira_Code',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#262626] text-[14px] tracking-[-0.56px] whitespace-nowrap">
+                <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[#262626] whitespace-nowrap">
                   <p className="leading-[normal]">Input</p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-[12px] items-start relative shrink-0 w-full">
                 <div className="flex gap-[40px] items-start relative shrink-0 w-full">
-                  <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#8a91a0] text-[14px] tracking-[-0.56px] w-[100px]">Role</p>
+                  <p className="leading-[normal] relative shrink-0 text-[#8a91a0] w-[100px]">Role</p>
                   <div className="flex flex-col items-start relative shrink-0">
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">Product Designer</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">Product Designer</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex gap-[40px] items-start relative shrink-0 w-full">
-                  <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#8a91a0] text-[14px] tracking-[-0.56px] w-[100px]">Team</p>
+                  <p className="leading-[normal] relative shrink-0 text-[#8a91a0] w-[100px]">Team</p>
                   <div className="flex flex-[1_0_0] flex-wrap gap-[4px] items-start min-w-0 relative">
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">InVivo Team</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">InVivo Team</p>
                     </div>
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">Core Benchling Team</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">Core Benchling Team</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex gap-[40px] items-start relative shrink-0 w-full">
-                  <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#8a91a0] text-[14px] tracking-[-0.56px] w-[100px]">Time</p>
+                  <p className="leading-[normal] relative shrink-0 text-[#8a91a0] w-[100px]">Time</p>
                   <div className="flex items-start justify-end relative shrink-0">
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">2025 - 2026</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">2025 - 2026</p>
                     </div>
                   </div>
                 </div>
@@ -106,32 +106,32 @@ export function BenchlingTooltip({ isVisible, side = 'right' }: BenchlingTooltip
                     </svg>
                   </div>
                 </div>
-                <div className="flex flex-col font-['Fira_Code',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#262626] text-[14px] tracking-[-0.56px] whitespace-nowrap">
+                <div className="flex flex-col justify-center leading-[0] relative shrink-0 text-[#262626] whitespace-nowrap">
                   <p className="leading-[normal]">Output</p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-[12px] items-start relative shrink-0 w-full">
                 <div className="flex gap-[40px] items-start relative shrink-0 w-full">
-                  <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#8a91a0] text-[14px] tracking-[-0.56px] w-[100px]">Project</p>
+                  <p className="leading-[normal] relative shrink-0 text-[#8a91a0] w-[100px]">Project</p>
                   <div className="flex flex-[1_0_0] flex-col items-start min-w-0 relative">
                     <div className="bg-[#edeff6] flex items-start px-[4px] py-[2px] relative rounded-[2px]">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[1.4] relative text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-normal break-words">Build a solid design environment for effective, efficient, and sustainable product development in AI era</p>
+                      <p className="leading-[1.4] relative text-[#5a5a5a] whitespace-normal break-words">Build a solid design environment for effective, efficient, and sustainable product development in AI era</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex gap-[40px] items-start relative shrink-0 w-full">
-                  <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#8a91a0] text-[14px] tracking-[-0.56px] w-[100px]">Tag</p>
+                  <p className="leading-[normal] relative shrink-0 text-[#8a91a0] w-[100px]">Tag</p>
                   <div className="flex flex-[1_0_0] flex-wrap gap-[4px] items-start min-w-0 relative">
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">AI</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">AI</p>
                     </div>
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">SaaS</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">SaaS</p>
                     </div>
                     <div className="bg-[#edeff6] flex items-center justify-center px-[4px] py-[2px] relative rounded-[2px] shrink-0">
-                      <p className="font-['Fira_Code',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#5a5a5a] text-[14px] tracking-[-0.56px] whitespace-nowrap">Life Science</p>
+                      <p className="leading-[normal] relative shrink-0 text-[#5a5a5a] whitespace-nowrap">Life Science</p>
                     </div>
                   </div>
                 </div>

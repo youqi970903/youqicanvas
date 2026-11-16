@@ -127,22 +127,22 @@ export function ProjectTooltip({ label, isVisible, side = 'right' }: ProjectTool
               <div className="rotate-90 flex items-center justify-center shrink-0">
                 <BoxArrowInUp />
               </div>
-              <span className="text-[14px] font-medium text-[#262626] font-['Fira_Code'] tracking-[-0.56px]">Input</span>
+              <span className="text-[#262626]">Input</span>
             </div>
             
             <div className="flex flex-col gap-[12px]">
               <div className="flex items-start gap-[40px]">
-                <span className="text-[14px] text-[#8a91a0] w-[100px] shrink-0 font-['Fira_Code'] tracking-[-0.56px]">Role</span>
-                <span className="text-[14px] bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a] font-['Fira_Code'] tracking-[-0.56px]">
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Role</span>
+                <span className="bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a]">
                   {data.input.role}
                 </span>
               </div>
               
               <div className="flex items-start gap-[40px]">
-                <span className="text-[14px] text-[#8a91a0] w-[100px] shrink-0 font-['Fira_Code'] tracking-[-0.56px]">Team</span>
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Team</span>
                 <div className="flex flex-wrap gap-[4px] grow">
                   {data.input.team.map((member, i) => (
-                    <span key={i} className="text-[14px] bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a] font-['Fira_Code'] tracking-[-0.56px]">
+                    <span key={i} className="bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a]">
                       {member}
                     </span>
                   ))}
@@ -150,8 +150,8 @@ export function ProjectTooltip({ label, isVisible, side = 'right' }: ProjectTool
               </div>
               
               <div className="flex items-start gap-[40px]">
-                <span className="text-[14px] text-[#8a91a0] w-[100px] shrink-0 font-['Fira_Code'] tracking-[-0.56px]">Time</span>
-                <span className="text-[14px] bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a] font-['Fira_Code'] tracking-[-0.56px]">
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Time</span>
+                <span className="bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a]">
                   {data.input.time}
                 </span>
               </div>
@@ -164,22 +164,22 @@ export function ProjectTooltip({ label, isVisible, side = 'right' }: ProjectTool
           <div className="flex flex-col gap-[16px]">
             <div className="flex items-center gap-[6px]">
               <BoxArrowRight />
-              <span className="text-[14px] font-medium text-[#262626] font-['Fira_Code'] tracking-[-0.56px]">Output</span>
+              <span className="text-[#262626]">Output</span>
             </div>
 
             <div className="flex flex-col gap-[12px]">
               <div className="flex items-start gap-[40px]">
-                <span className="text-[14px] text-[#8a91a0] w-[100px] shrink-0 font-['Fira_Code'] tracking-[-0.56px]">Project</span>
-                <div className="text-[14px] bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a] font-['Fira_Code'] tracking-[-0.56px] leading-[1.3] grow">
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Project</span>
+                <div className="bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a] leading-[1.3] grow">
                   {data.output.description}
                 </div>
               </div>
 
               <div className="flex items-start gap-[40px]">
-                <span className="text-[14px] text-[#8a91a0] w-[100px] shrink-0 font-['Fira_Code'] tracking-[-0.56px]">Tag</span>
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Tag</span>
                 <div className="flex flex-wrap gap-[4px] grow">
                   {data.output.tags.map((tag, i) => (
-                    <span key={i} className="text-[14px] bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a] font-['Fira_Code'] tracking-[-0.56px]">
+                    <span key={i} className="bg-[#edeff6] px-[4px] py-0 rounded-[2px] text-[#5a5a5a]">
                       {tag}
                     </span>
                   ))}

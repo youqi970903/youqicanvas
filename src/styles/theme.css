@@ -139,37 +139,37 @@
 
   h1 {
     font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 
   h2 {
     font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 
   h3 {
     font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 
   h4 {
     font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 
   label {
     font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 
   button {
     font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 
@@ -180,12 +180,52 @@
   }
 }
 
+@layer base {
+  [data-page-typography] :where(h1, h2, label, button, input, select, textarea) {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  [data-page-typography] :where(*) {
+    letter-spacing: var(--page-letter-spacing);
+  }
+}
+
 @layer utilities {
   .custom-node-cursor, .custom-node-cursor * {
     cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg filter='url(%23f)'%3E%3Cpath d='M7.60099 19.2596L3.04242 3.2681C2.80703 2.44237 3.66465 1.72934 4.44448 2.10241L19.5472 9.32748C20.3502 9.71163 20.2899 10.8642 19.4512 11.1614L13.2398 13.3622C13.0142 13.4421 12.825 13.5994 12.7064 13.8056L9.44041 19.4844C8.99942 20.2512 7.84337 20.1099 7.60099 19.2596Z' fill='%23262626'/%3E%3Cpath d='M2.56139 3.40499C2.2048 2.15345 3.50279 1.09776 4.66002 1.65108L19.7626 8.87667C20.9663 9.45252 20.8772 11.1864 19.618 11.6325L13.4071 13.8337C13.2932 13.874 13.1983 13.9532 13.1395 14.0554L9.87389 19.7341C9.21291 20.8828 7.48401 20.673 7.11998 19.3972L2.56139 3.40499Z' stroke='white'/%3E%3C/g%3E%3Cdefs%3E%3Cfilter id='f' x='0' y='0' width='32' height='32' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeGaussianBlur stdDeviation='1'/%3E%3CfeOffset dy='1'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/%3E%3CfeBlend in='SourceGraphic' mode='normal'/%3E%3C/filter%3E%3C/defs%3E%3C/svg%3E") 3 3, default !important;
   }
 
-  .custom-project-cursor, .custom-project-cursor * {
-    cursor: url("data:image/svg+xml,%3Csvg width='128' height='48' viewBox='0 0 128 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg filter='url(%23f)'%3E%3Cpath d='M7.60099 19.2596L3.04242 3.2681C2.80703 2.44237 3.66465 1.72934 4.44448 2.10241L19.5472 9.32748C20.3502 9.71163 20.2899 10.8642 19.4512 11.1614L13.2398 13.3622C13.0142 13.4421 12.825 13.5994 12.7064 13.8056L9.44041 19.4844C8.99942 20.2512 7.84337 20.1099 7.60099 19.2596Z' fill='%23262626'/%3E%3Cpath d='M2.56139 3.40499C2.2048 2.15345 3.50279 1.09776 4.66002 1.65108L19.7626 8.87667C20.9663 9.45252 20.8772 11.1864 19.618 11.6325L13.4071 13.8337C13.2932 13.874 13.1983 13.9532 13.1395 14.0554L9.87389 19.7341C9.21291 20.8828 7.48401 20.673 7.11998 19.3972L2.56139 3.40499Z' stroke='white'/%3E%3Crect x='15' y='8' width='110' height='32' rx='16' fill='%23262626'/%3E%3Ctext x='70' y='25' fill='white' font-family='sans-serif' font-size='14' font-weight='500' text-anchor='middle' dominant-baseline='middle'%3EClick to view%3C/text%3E%3C/g%3E%3Cdefs%3E%3Cfilter id='f' x='0' y='0' width='128' height='48' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeGaussianBlur stdDeviation='1'/%3E%3CfeOffset dy='1'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/%3E%3CfeBlend in='SourceGraphic' mode='normal'/%3E%3C/filter%3E%3C/defs%3E%3C/svg%3E") 3 3, default !important;
-  }
+}
+
+.canvas-control-surface {
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 5%);
+}
+
+.canvas-control-surface::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: rgb(255 255 255 / 85%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  content: '';
+}
+
+
+.ui-hint {
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 4px;
+  background: rgb(38 38 38 / 68%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  padding: 2px 6px;
+  color: #fff;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
 }

@@ -1,0 +1,101 @@
+.settings-slider {
+  --thumb-size: 12px;
+  --fill-end: calc(var(--thumb-size) / 2 + (100% - var(--thumb-size)) * var(--slider-ratio));
+  --thumb-border: #a2a2a2;
+
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  margin-block-start: -4px;
+  border-radius: 4px;
+  cursor: pointer;
+  background:
+    linear-gradient(to right, #a3a3a3 var(--fill-end), #ededed var(--fill-end))
+    center / 100% 3px no-repeat;
+}
+
+.settings-slider:hover,
+.settings-slider:active {
+  --thumb-border: #666;
+}
+
+.settings-slider:focus-visible {
+  outline: 2px solid #737373;
+  outline-offset: 2px;
+}
+
+.settings-slider::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.settings-slider::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.settings-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  margin-top: calc((3px - var(--thumb-size)) / 2);
+  border: 1px solid var(--thumb-border);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px #0001;
+}
+
+.settings-slider::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border: 1px solid var(--thumb-border);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px #0001;
+}
+
+.settings-select {
+  --select-inset: 8px;
+
+  appearance: none;
+  padding-inline-start: var(--select-inset);
+  padding-inline-end: calc(var(--select-inset) + 20px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M1 4l5 5 5-5' stroke='%23262626' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right var(--select-inset) center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+}
+
+@media (forced-colors: active) {
+  .settings-select {
+    appearance: auto;
+    padding-inline-end: var(--select-inset);
+    background-image: none;
+  }
+}
+
+.settings-color {
+  appearance: none;
+  overflow: hidden;
+  padding: 0;
+}
+
+.settings-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.settings-color::-webkit-color-swatch {
+  border: 0;
+}
+
+.settings-color::-moz-color-swatch {
+  border: 0;
+}

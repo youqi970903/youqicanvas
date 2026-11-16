@@ -53,21 +53,21 @@ export function BornTooltip({ isVisible, side = 'right' }: BornTooltipProps) {
                   <path d={svgPaths.p30557bf0} fill="#262626" />
                 </svg>
               </div>
-              <span className="text-[14px] font-medium font-['Fira_Code'] text-[#262626] tracking-[-0.56px]">Input</span>
+              <span className="text-[#262626]">Input</span>
             </div>
             
             <div className="flex flex-col gap-[12px]">
               <div className="flex gap-[40px] items-start">
-                <span className="text-[14px] font-['Fira_Code'] text-[#8a91a0] tracking-[-0.56px] w-[100px] shrink-0">Context</span>
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Context</span>
                 <div className="bg-[#edeff6] px-[4px] py-0 rounded-[4px]">
-                  <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">A loving family ❤️</span>
+                  <span className="text-[#5a5a5a]">A loving family ❤️</span>
                 </div>
               </div>
               
               <div className="flex gap-[40px] items-start">
-                <span className="text-[14px] font-['Fira_Code'] text-[#8a91a0] tracking-[-0.56px] w-[100px] shrink-0">Ingredients</span>
+                <span className="text-[#8a91a0] w-[100px] shrink-0">Ingredients</span>
                 <div className="bg-[#edeff6] px-[4px] py-0 rounded-[4px]">
-                  <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">A bunch of mysterious stuff</span>
+                  <span className="text-[#5a5a5a]">A bunch of mysterious stuff</span>
                 </div>
               </div>
             </div>
@@ -83,13 +83,13 @@ export function BornTooltip({ isVisible, side = 'right' }: BornTooltipProps) {
                   <path d={svgPaths.p28804b40} fill="#262626" />
                 </svg>
               </div>
-              <span className="text-[14px] font-medium font-['Fira_Code'] text-[#262626] tracking-[-0.56px]">Output</span>
+              <span className="text-[#262626]">Output</span>
             </div>
             
             <div className="flex gap-[40px] items-start">
-              <span className="text-[14px] font-['Fira_Code'] text-[#8a91a0] tracking-[-0.56px] w-[100px] shrink-0">Role</span>
+              <span className="text-[#8a91a0] w-[100px] shrink-0">Role</span>
               <div className="bg-[#edeff6] px-[4px] py-0 rounded-[4px]">
-                <span className="text-[14px] font-['Fira_Code'] text-[#5a5a5a] tracking-[-0.56px]">Pragmatic Idealist</span>
+                <span className="text-[#5a5a5a]">Pragmatic Idealist</span>
               </div>
             </div>
           </div>
