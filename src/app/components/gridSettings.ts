@@ -7,10 +7,10 @@ export const GRID_TRAIL_REFERENCE = {
 };
 
 export const DEFAULT_GRID_SETTINGS = {
-  cellSize: 36,
-  lineWidth: 1,
-  backgroundColor: '#f7f7f7',
-  lineColor: '#ededed',
+  cellSize: 32,
+  lineWidth: 0.5,
+  backgroundColor: '#fafafa',
+  lineColor: '#f0f0f0',
   radius: 150,
   strength: 100,
   useMulticolor: true,

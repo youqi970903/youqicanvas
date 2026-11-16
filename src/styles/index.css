@@ -1,3 +1,15 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+@media (prefers-reduced-motion: no-preference) {
+  .node-connector-line {
+    animation: node-connector-flow 0.65s linear infinite;
+  }
+}
+
+@keyframes node-connector-flow {
+  to {
+    stroke-dashoffset: -8px;
+  }
+}
